@@ -1,3 +1,6 @@
 p {
   font-family: Lato;
 }
+td.mat-cell, td.mat-footer-cell, th.mat-header-cell {
+  padding: 8px;
+}
