@@ -2,7 +2,7 @@ import { Component, ViewChild, ContentChildren, QueryList, forwardRef
  } from '@angular/core';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
-import {CdkDragDrop, moveItemInArray, transferArrayItem, CdkDragHandle} from '@angular/cdk/drag-drop';
+import { moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatTable} from '@angular/material/table';
 
 
@@ -33,12 +33,23 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class AppComponent  {
   @ViewChild('table') table: MatTable<PeriodicElement>;
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'reorder'];
   dataSource = ELEMENT_DATA;
   
-  dropTable(event: CdkDragDrop<PeriodicElement[]>) {
-    const prevIndex = this.dataSource.findIndex((d) => d === event.item.data);
-    moveItemInArray(this.dataSource, prevIndex, event.currentIndex);
+  dropTable(element, operation) {
+    let selectedElePosition = element.position;
+    const prevIndex = this.dataSource.findIndex((d) => d === element);
+    let newPosition;
+    if (operation == 'INC' && !(prevIndex <= 0)) {
+      newPosition = prevIndex - 1
+    } else if (operation == 'DEC' && !(prevIndex+1 >= this.dataSource.length)) {
+      newPosition = prevIndex +1
+    }
+    if (newPosition >= 0) {
+      this.dataSource[prevIndex].position = this.dataSource[newPosition].position
+      this.dataSource[newPosition].position = selectedElePosition;
+      moveItemInArray(this.dataSource, prevIndex, newPosition);
+    }
     this.table.renderRows();
   }
 }
