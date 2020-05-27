@@ -51,5 +51,6 @@ export class AppComponent  {
       moveItemInArray(this.dataSource, prevIndex, newPosition);
     }
     this.table.renderRows();
+    
   }
 }
